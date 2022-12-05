@@ -1,49 +1,51 @@
 """Employee pay calculator."""
 """ENTER YOUR SOLUTION HERE!"""
 
+class FixedCommission:
+    def __init__(self, bonus) -> None:
+        self.description = f"bonus commission of {bonus}"
+        self.value = bonus
+
+class ContractCommission:
+    def __init__(self, contract_num, price_per_contract) -> None:
+        self.description = f"commission for {contract_num} contract(s) at {price_per_contract}/contract"
+        self.value = contract_num * price_per_contract
+
 class Employee:
-    def __init__(self, name, contract="", hours="", commission="", hourlyPay="", salaryPay="", fixedCommission="", noContracts="", contractPay=""):
+    def __init__(self, name, commission):
         self.name = name
-        self.contract = contract
-        self.hours = hours
         self.commission = commission
-        self.hourlyPay = hourlyPay
-        self.salaryPay = salaryPay
-        self.fixedCommission = fixedCommission
-        self.noContracts = noContracts
-        self.contractPay = contractPay
-
-    def contract_pay(self):
-        if self.contract == 'monthly':
-            return self.salaryPay
-        else:
-            return self.hourlyPay * self.hours
-
-    def commission_pay(self):
-        if self.commission == 'bonus':
-            return self.fixedCommission
-        else:
-            return self.noContracts * self.contractPay
 
     def get_pay(self):
-        totalPay = self.contract_pay()
-        if self.commission:
-            totalPay += self.commission_pay()
-        return totalPay
+        return self.get_base_pay() + (self.commission.value if self.commission else 0)
 
     def __str__(self):
-        printStr = f"{self.name} works on a "
-        if self.contract == 'monthly':
-            printStr += f"{self.name} has a monthly salary of {self.contractPay}"
-        else:
-            printStr += f"{self.name} has a contract of {self.hours} hours at {self.hourlyPay}/hour"
-        if self.commission:
-            if self.commission == 'bonus':
-                printStr += f" and receives a bonus commission of {self.fixedCommission}."
-            else:
-                printStr += f" and receives a commission for {noContracts} contract(s) at {contractPay}/contract."
-        printStr += f" {self.name}'s total pay is {self.get_pay()}."
-        print(printStr)
+        return f"{self.name} works on a {self.get_contract_desc()}" + \
+            (f" and receives a {self.commission.description}" if self.commission else "") + \
+                f". Their total pay is {self.get_pay()}."
+
+class SalaryEmployee(Employee):
+    def __init__(self, name, salary, commission=None):
+        super().__init__(name, commission)
+        self.salary = salary
+
+    def get_contract_desc(self):
+        return f"monthly salary of {self.salary}"
+    
+    def get_base_pay(self):
+        return self.salary
+
+class HourlyEmployee(Employee):
+    def __init__(self, name, hours, pay_per_hour, commission=None):
+        super().__init__(name, commission)
+        self.hours = hours
+        self.pay_per_hour = pay_per_hour
+
+    def get_contract_desc(self):
+        return f"contract of {self.hours} hours at {self.pay_per_hour}/hour"
+
+    def get_base_pay(self):
+        return self.hours * self.pay_per_hour
 
 
 # Billie works on a monthly salary of 4000.  Their total pay is 4000.

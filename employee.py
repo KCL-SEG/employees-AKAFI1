@@ -12,9 +12,8 @@ class ContractCommission:
         self.value = contract_num * price_per_contract
 
 class Employee:
-    def __init__(self, name, commission):
+    def __init__(self, name):
         self.name = name
-        self.commission = commission
 
     def get_pay(self):
         return self.get_base_pay() + (self.commission.value if self.commission else 0)
@@ -36,16 +35,16 @@ class SalaryEmployee(Employee):
         return self.salary
 
 class HourlyEmployee(Employee):
-    def __init__(self, name, hours, pay_per_hour, commission=None):
+    def __init__(self, name, hours, hourly_pay, commission=None):
         super().__init__(name, commission)
         self.hours = hours
-        self.pay_per_hour = pay_per_hour
+        self.hourly_pay = hourly_pay
 
     def get_contract_desc(self):
-        return f"contract of {self.hours} hours at {self.pay_per_hour}/hour"
+        return f"contract of {self.hours} hours at {self.hourly_pay}/hour"
 
     def get_base_pay(self):
-        return self.hours * self.pay_per_hour
+        return self.hours * self.hourly_pay
 
 
 # Billie works on a monthly salary of 4000.  Their total pay is 4000.
